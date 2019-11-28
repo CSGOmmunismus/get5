@@ -22,13 +22,12 @@
 #include "include/logdebug.inc"
 #include <cstrike>
 #include <sourcemod>
-
 #include "get5/util.sp"
 #include "get5/version.sp"
 
 #include <SteamWorks>
-#include <json>  // github.com/clugg/sm-json
-
+#include <system2> // github.com/dordnung/System2/
+#include <json> // github.com/clugg/sm-json
 #include "get5/jsonhelpers.sp"
 
 #pragma semicolon 1
@@ -43,16 +42,34 @@ char g_APIKey[128];
 ConVar g_APIURLCvar;
 char g_APIURL[128];
 
+char g_storedAPIURL[128];
+char g_storedAPIKey[128];
+
+ConVar g_FTPHostCvar;
+char g_FTPHost[128];
+
+ConVar g_FTPUsernameCvar;
+char g_FTPUsername[128];
+
+ConVar g_FTPPasswordCvar;
+char g_FTPPassword[128];
+
+ConVar g_FTPPortCvar;
+int g_FTPPort;
+
+ConVar g_FTPEnableCvar;
+bool g_FTPEnable;
+
+
 #define LOGO_DIR "materials/panorama/images/tournaments/teams"
 #define LEGACY_LOGO_DIR "resource/flash/econ/tournaments/teams"
-
 // clang-format off
 public Plugin myinfo = {
   name = "Get5 Web API Integration",
-  author = "splewis",
+  author = "splewis/phlexplexico",
   description = "Records match stats to a get5-web api",
-  version = PLUGIN_VERSION,
-  url = "https://github.com/splewis/get5"
+  version = "1.0",
+  url = "https://github.com/phlexplexico/get5-web"
 };
 // clang-format on
 
@@ -61,17 +78,36 @@ public void OnPluginStart() {
   LogDebug("OnPluginStart version=%s", PLUGIN_VERSION);
   g_UseSVGCvar = CreateConVar("get5_use_svg", "1", "support svg team logos");
   HookConVarChange(g_UseSVGCvar, LogoBasePathChanged);
+
+  g_FTPHostCvar = 
+      CreateConVar("get5_api_ftp_host", "ftp://example.com", "Remote FTP Host. Make sure you do NOT have the trailing slash. Include the path to the directory you wish to have.", FCVAR_PROTECTED);
+
+  g_FTPPortCvar = 
+      CreateConVar("get5_api_ftp_port", "21", "Remote FTP Port", FCVAR_PROTECTED);
+
+  g_FTPUsernameCvar =
+      CreateConVar("get5_api_ftp_username", "username", "Username for the FTP connection.", FCVAR_PROTECTED);
+
+  g_FTPPasswordCvar = 
+      CreateConVar("get5_api_ftp_password", "supersecret", "Password for the FTP user. Leave blank if no password.", FCVAR_PROTECTED);
+
+  g_FTPEnableCvar = 
+      CreateConVar("get5_api_ftp_enabled", "0", "0 Disables FTP Upload, 1 Enables.");
+
   g_APIKeyCvar =
-      CreateConVar("get5_web_api_key", "", "Match API key, this is automatically set through rcon");
+      CreateConVar("get5_web_api_key", "", "Match API key, this is automatically set through rcon", FCVAR_DONTRECORD);
   HookConVarChange(g_APIKeyCvar, ApiInfoChanged);
 
-  g_APIURLCvar = CreateConVar("get5_web_api_url", "", "URL the get5 api is hosted at");
+  g_APIURLCvar = CreateConVar("get5_web_api_url", "", "URL the get5 api is hosted at, IGNORE AS IT IS SYSTEM SET.", FCVAR_DONTRECORD);
 
   HookConVarChange(g_APIURLCvar, ApiInfoChanged);
 
   RegConsoleCmd("get5_web_avaliable",
                 Command_Avaliable);  // legacy version since I'm bad at spelling
   RegConsoleCmd("get5_web_available", Command_Avaliable);
+  /** Create and exec plugin's configuration file **/
+  AutoExecConfig(true, "get5api");
+  
 }
 
 public Action Command_Avaliable(int client, int args) {
@@ -125,6 +161,31 @@ static Handle CreateRequest(EHTTPMethod httpMethod, const char[] apiMethod, any:
 
   Handle req = SteamWorks_CreateHTTPRequest(httpMethod, formattedUrl);
   if (StrEqual(g_APIKey, "")) {
+    // Not using a web interface.
+    return INVALID_HANDLE;
+
+  } else if (req == INVALID_HANDLE) {
+    LogError("Failed to create request to %s", formattedUrl);
+    return INVALID_HANDLE;
+
+  } else {
+    SteamWorks_SetHTTPCallbacks(req, RequestCallback);
+    AddStringParam(req, "key", g_APIKey);
+    return req;
+  }
+}
+
+static Handle CreateDemoRequest(EHTTPMethod httpMethod, const char[] apiMethod, any:...) {
+  char url[1024];
+  Format(url, sizeof(url), "%s%s", g_storedAPIURL, apiMethod);
+
+  char formattedUrl[1024];
+  VFormat(formattedUrl, sizeof(formattedUrl), url, 3);
+
+  LogDebug("Trying to create request to url %s", formattedUrl);
+
+  Handle req = SteamWorks_CreateHTTPRequest(httpMethod, formattedUrl);
+  if (StrEqual(g_storedAPIKey, "")) {
     // Not using a web interface.
     return INVALID_HANDLE;
 
@@ -193,8 +254,8 @@ public void CheckForLogo(const char[] logo) {
   if (!FileExists(logoPath)) {
     LogDebug("Fetching logo for %s", logo);
     Handle req = g_UseSVGCvar.BoolValue
-                     ? CreateRequest(k_EHTTPMethodGET, "/static/img/logos/%s.svg", logo)
-                     : CreateRequest(k_EHTTPMethodGET, "/static/img/logos/%s.png", logo);
+                     ? CreateRequest(k_EHTTPMethodGET, "/static/resource/csgo/resource/flash/econ/tournaments/teams/%s.svg", logo)
+                     : CreateRequest(k_EHTTPMethodGET, "/static/resource/csgo/resource/flash/econ/tournaments/teams/%s.png", logo);
 
     if (req == INVALID_HANDLE) {
       return;
@@ -233,13 +294,17 @@ public int LogoCallback(Handle request, bool failure, bool successful, EHTTPStat
 
 public void Get5_OnGoingLive(int mapNumber) {
   char mapName[64];
+  g_FTPEnable = g_FTPEnableCvar.BoolValue;
   GetCurrentMap(mapName, sizeof(mapName));
   Handle req = CreateRequest(k_EHTTPMethodPOST, "match/%d/map/%d/start", g_MatchID, mapNumber);
   if (req != INVALID_HANDLE) {
     AddStringParam(req, "mapname", mapName);
     SteamWorks_SendHTTPRequest(req);
   }
-
+  if (g_FTPEnable) {
+    Format(g_storedAPIKey, sizeof(g_storedAPIKey), g_APIKey);
+    Format(g_storedAPIURL, sizeof(g_storedAPIURL), g_APIURL);
+  }
   Get5_AddLiveCvar("get5_web_api_key", g_APIKey);
   Get5_AddLiveCvar("get5_web_api_url", g_APIURL);
 }
@@ -355,6 +420,109 @@ static void AddIntParam(Handle request, const char[] key, int value) {
   char buffer[32];
   IntToString(value, buffer, sizeof(buffer));
   AddStringParam(request, key, buffer);
+}
+
+public void Get5_OnMapVetoed(MatchTeam team, const char[] map){
+  char teamString[64];
+  GetTeamString(team, teamString, sizeof(teamString));
+  LogDebug("Map Veto START team %s map vetoed %s", team, map);
+  Handle req = CreateRequest(k_EHTTPMethodPOST, "match/%d/vetoUpdate", g_MatchID);
+  if (req != INVALID_HANDLE) {
+      AddStringParam(req, "map", map);
+      AddStringParam(req, "teamString", teamString);
+      AddStringParam(req, "pick_or_veto", "ban");
+      SteamWorks_SendHTTPRequest(req);
+  }
+  LogDebug("Accepted Map Veto.");
+}
+
+public void Get5_OnDemoFinished(const char[] filename){
+  g_FTPEnable = g_FTPEnableCvar.BoolValue;
+  if (g_FTPEnable) {
+    LogDebug("About to enter UploadDemo.");
+    int mapNumber = MapNumber();
+    char zippedFile[PLATFORM_MAX_PATH];
+    char formattedURL[PLATFORM_MAX_PATH];
+    UploadDemo(filename, zippedFile);
+
+    Handle req = CreateDemoRequest(k_EHTTPMethodPOST, "match/%d/map/%d/demo", g_MatchID, mapNumber-1);
+    LogDebug("Our api url: %s", g_storedAPIURL);
+    // Send URL to store in database to show users at end of match.
+    // This requires anonmyous downloads on the FTP server unless
+    // you give out usernames.
+    if (req != INVALID_HANDLE) {
+        Format(formattedURL, sizeof(formattedURL), "%sstatic/demos/%s", g_storedAPIURL, zippedFile);
+        LogDebug("Our URL: %s", formattedURL);
+        AddStringParam(req, "demoFile", formattedURL);
+        SteamWorks_SendHTTPRequest(req);
+    }
+    // Need to store as get5 recycles the configs before the demos finish recording.
+    Format(g_storedAPIKey, sizeof(g_storedAPIKey), "");
+    Format(g_storedAPIURL, sizeof(g_storedAPIURL), "");
+  }
+}
+
+public void UploadDemo(const char[] filename, char zippedFile[PLATFORM_MAX_PATH]){
+  char remoteDemoPath[PLATFORM_MAX_PATH];
+  if(filename[0]){
+    g_FTPHostCvar.GetString(g_FTPHost, sizeof(g_FTPHost));
+    g_FTPPort = g_FTPPortCvar.IntValue;
+    g_FTPUsernameCvar.GetString(g_FTPUsername, sizeof(g_FTPUsername));
+    g_FTPPasswordCvar.GetString(g_FTPPassword, sizeof(g_FTPPassword));
+    
+    Format(zippedFile, sizeof(zippedFile), "%s", filename);
+    Format(remoteDemoPath, sizeof(remoteDemoPath), "%s/%s", g_FTPHost, zippedFile);
+    LogDebug("Our File is: %s and remote demo path of %s", zippedFile, remoteDemoPath);
+    System2FTPRequest ftpRequest = new System2FTPRequest(FtpResponseCallback, remoteDemoPath);
+    ftpRequest.AppendToFile = false;
+    ftpRequest.CreateMissingDirs = true;
+    ftpRequest.SetAuthentication(g_FTPUsername, g_FTPPassword);
+    ftpRequest.SetPort(g_FTPPort);
+    ftpRequest.SetProgressCallback(FtpProgressCallback);
+    LogDebug("Our File is: %s", zippedFile);
+
+    ftpRequest.SetInputFile(zippedFile);
+    ftpRequest.StartRequest(); 
+  } else{
+    LogDebug("FTP Uploads Disabled OR Filename was empty (no demo to upload). Change config to enable.");
+  }
+}
+
+
+public void FtpProgressCallback(System2FTPRequest request, int dlTotal, int dlNow, int ulTotal, int ulNow) {
+  char file[PLATFORM_MAX_PATH];
+  request.GetInputFile(file, sizeof(file));
+  if (strlen(file) > 0) {
+      LogDebug("Uploading %s file with %d bytes total, %d now", file, ulTotal, ulNow);
+  }
+}  
+
+public void FtpResponseCallback(bool success, const char[] error, System2FTPRequest request, System2FTPResponse response) {
+    if (success || StrContains(error, "Uploaded unaligned file size") > -1) {
+        char file[PLATFORM_MAX_PATH];
+        request.GetInputFile(file, sizeof(file));
+        if (strlen(file) > 0) {
+            if (DeleteFileIfExists(file)) {
+                LogDebug("Deleted file after complete.");
+            }
+        }
+    } else{
+      LogError("There was a problem: %s", error);
+    }
+}
+
+public void Get5_OnMapPicked(MatchTeam team, const char[] map){
+  char teamString[64];
+  GetTeamString(team, teamString, sizeof(teamString));
+  LogDebug("Map Pick START team %s map picked %s", team, map);
+  Handle req = CreateRequest(k_EHTTPMethodPOST, "match/%d/vetoUpdate", g_MatchID);
+  if (req != INVALID_HANDLE) {
+      AddStringParam(req, "map", map);
+      AddStringParam(req, "teamString", teamString);
+      AddStringParam(req, "pick_or_veto", "pick");
+      SteamWorks_SendHTTPRequest(req);
+  }
+  LogDebug("Accepted Map Pick.");
 }
 
 public void Get5_OnSeriesResult(MatchTeam seriesWinner, int team1MapScore, int team2MapScore) {
