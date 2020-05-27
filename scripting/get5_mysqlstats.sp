@@ -43,7 +43,7 @@ public Plugin myinfo = {
   name = "Get5 MySQL stats",
   author = "splewis",
   description = "Records match stats collected by get5 to MySQL",
-  version = 1.0.2,
+  version = "1.0.2",
   url = "https://github.com/splewis/get5"
 };
 // clang-format on
