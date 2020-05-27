@@ -34,13 +34,9 @@
 #pragma newdecls required
 
 int g_MatchID = -1;
+
 ConVar g_UseSVGCvar;
 char g_LogoBasePath[128];
-ConVar g_APIKeyCvar;
-char g_APIKey[128];
-
-ConVar g_APIURLCvar;
-char g_APIURL[128];
 
 char g_storedAPIURL[128];
 char g_storedAPIKey[128];
@@ -60,16 +56,22 @@ int g_FTPPort;
 ConVar g_FTPEnableCvar;
 bool g_FTPEnable;
 
+ConVar g_APIKeyCvar;
+char g_APIKey[128];
+
+ConVar g_APIURLCvar;
+char g_APIURL[128];
 
 #define LOGO_DIR "materials/panorama/images/tournaments/teams"
 #define LEGACY_LOGO_DIR "resource/flash/econ/tournaments/teams"
+
 // clang-format off
 public Plugin myinfo = {
   name = "Get5 Web API Integration",
-  author = "splewis/phlexplexico",
+  author = "splewis/phlexplexico/tuudik",
   description = "Records match stats to a get5-web api",
-  version = "1.0",
-  url = "https://github.com/phlexplexico/get5-web"
+  version = 1.0.2,
+  url = "https://github.com/CSGOmmunismus/get5"
 };
 // clang-format on
 
@@ -81,36 +83,29 @@ public void OnPluginStart() {
 
   g_FTPHostCvar = 
       CreateConVar("get5_api_ftp_host", "ftp://example.com", "Remote FTP Host. Make sure you do NOT have the trailing slash. Include the path to the directory you wish to have.", FCVAR_PROTECTED);
-
   g_FTPPortCvar = 
       CreateConVar("get5_api_ftp_port", "21", "Remote FTP Port", FCVAR_PROTECTED);
-
   g_FTPUsernameCvar =
       CreateConVar("get5_api_ftp_username", "username", "Username for the FTP connection.", FCVAR_PROTECTED);
-
   g_FTPPasswordCvar = 
       CreateConVar("get5_api_ftp_password", "supersecret", "Password for the FTP user. Leave blank if no password.", FCVAR_PROTECTED);
-
   g_FTPEnableCvar = 
       CreateConVar("get5_api_ftp_enabled", "0", "0 Disables FTP Upload, 1 Enables.");
 
   g_APIKeyCvar =
       CreateConVar("get5_web_api_key", "", "Match API key, this is automatically set through rcon", FCVAR_DONTRECORD);
   HookConVarChange(g_APIKeyCvar, ApiInfoChanged);
-
   g_APIURLCvar = CreateConVar("get5_web_api_url", "", "URL the get5 api is hosted at, IGNORE AS IT IS SYSTEM SET.", FCVAR_DONTRECORD);
 
   HookConVarChange(g_APIURLCvar, ApiInfoChanged);
 
-  RegConsoleCmd("get5_web_avaliable",
-                Command_Avaliable);  // legacy version since I'm bad at spelling
-  RegConsoleCmd("get5_web_available", Command_Avaliable);
+  RegConsoleCmd("get5_web_available", Command_Available);
   /** Create and exec plugin's configuration file **/
   AutoExecConfig(true, "get5api");
   
 }
 
-public Action Command_Avaliable(int client, int args) {
+public Action Command_Available(int client, int args) {
   char versionString[64] = "unknown";
   ConVar versionCvar = FindConVar("get5_version");
   if (versionCvar != null) {

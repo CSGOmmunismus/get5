@@ -227,7 +227,7 @@ public Plugin myinfo = {
   name = "Get5",
   author = "splewis",
   description = "",
-  version = PLUGIN_VERSION,
+  version = 1.0.2,
   url = "https://github.com/splewis/get5"
 };
 // clang-format on

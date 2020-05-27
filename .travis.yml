@@ -29,6 +29,7 @@ before_script:
     - wget https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc
     - cd ../../../..
     - cp -r ./dependencies/sm-json/addons/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
+    - cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
     
 
 script:
