@@ -37,8 +37,7 @@ jobs:
           secure: ckLkXStxYDEVKt8KOwr4lrBmGF2a6rflZnS7nQpP9oCqI9WntFBACPMGVYGCGH/Mqe8ImGRQws8upNjVFECTz8DqfU3eAcirRVl8IrIRPDnrcYX6KjBZjd4y/Liw4H/H9B1eGGjK/HGBc+GDd7n1BXWiJLqvCFGTafV0hJaeBeWgnwG3Sr9qmw9mZQuBHNZY3dK/sz9OCpLy6dGAVgZ8QULv4599ShjgApFVLEm/7VnNL2zcS+ytAgXySAR6vuPSLegpjypMPkyg/HT1qu6C9RND2Q5iqcbx6sYpC1+HL4EbvwM1l1g/uUTUmD8WwQqCzAoBC2mlgokT1uGiRSiIAsWLcjPpKNaNnH80qBUejY71V56QHrcenaLzgCtEU9bDhMdMezZND70v6bM1zG1CNQ3sKsmwszRHaYk1SCb+wa1kDT07EWEeUBeHYOU3w5tqYOvXhJ1G91QOIeggO4eKPsISVpZLfjurZ1VC0ZXJYytmWmJukk/C/xfOvCONQmTtlY+ciUkTvfRgCoKs7j9FR5Ks9TawGQx5C32QhY15VVGzdqB0cDwLoDL4Uc62owAVVv1VL8B9hIhz0058cD1BSrCihNl1XRaA4ewn0tuJNfoBkMjZRfN+ZTM+/ZGH1pQkW3ndqjNOhT7RyjjcUfh3rgUSL59l8KHwJXTAlOJBZuM=
         file: get5-$TRAVIS_BUILD_NUMBER.zip
         on:
-          all_branches: true
-          condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+
+          tags: true
         cleanup: "false"
 
 notifications:
