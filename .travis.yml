@@ -5,7 +5,7 @@ env:
   - SMVERSION=1.10
 jobs:
   include:
-    - stage: "Prepare"
+    - stage: "Build it!"
       script:
         - git submodule update --init
         - git clone https://github.com/splewis/sm-builder
@@ -24,14 +24,9 @@ jobs:
         - cd ../../../..
         - cp -r ./dependencies/sm-json/addons/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
         - cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
-    - stage: "Version for dev build"
-      script:
         - smversion scripting/get5/version.sp scripting/get5/manual_version.sp $TRAVIS_BUILD_NUMBER --gitcommit
-    - stage: "Build"
-      script:
         - smbuilder
         - zip -r get5-$TRAVIS_COMMIT.zip builds/get5/*
-    - stage: "Deploy to github"
       before_deploy:
         - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
         - git tag $TRAVIS_TAG
