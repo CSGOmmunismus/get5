@@ -23,7 +23,8 @@ script:
   - cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
   - smversion scripting/get5/version.sp scripting/get5/manual_version.sp $TRAVIS_BUILD_NUMBER --gitcommit
   - smbuilder
-  - zip -r get5-${TRAVIS_BUILD_NUMBER}.zip builds/get5/*
+  - cd builds/get5/
+  - zip -r get5-${TRAVIS_BUILD_NUMBER}.zip *
 deploy:
   provider: releases
   name: Build $TRAVIS_TAG
