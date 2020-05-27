@@ -3,39 +3,36 @@ addons:
     - lib32stdc++6
 env:
   - SMVERSION=1.10
-jobs:
-  include:
-    - stage: "Build it!"
-      script:
-        - git submodule update --init
-        - git clone https://github.com/splewis/sm-builder
-        - cd sm-builder
-        - pip install --user -r requirements.txt
-        - python setup.py install --prefix=~/.local
-        - cd ..
-        - SMPACKAGE="http://sourcemod.net/latest.php?os=linux&version=${SMVERSION}"
-        - wget $SMPACKAGE
-        - tar xfz $(basename $SMPACKAGE)
-        - cd addons/sourcemod/scripting/
-        - chmod +x spcomp
-        - PATH+=":$PWD"
-        - cd include
-        - wget https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc
-        - cd ../../../..
-        - cp -r ./dependencies/sm-json/addons/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
-        - cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
-        - smversion scripting/get5/version.sp scripting/get5/manual_version.sp $TRAVIS_BUILD_NUMBER --gitcommit
-        - smbuilder
-        - zip -r get5-$TRAVIS_BUILD_NUMBER.zip builds/get5/*
-      deploy:
-        provider: releases
-        name: Build $TRAVIS_TAG
-        api_key:
-          secure: ckLkXStxYDEVKt8KOwr4lrBmGF2a6rflZnS7nQpP9oCqI9WntFBACPMGVYGCGH/Mqe8ImGRQws8upNjVFECTz8DqfU3eAcirRVl8IrIRPDnrcYX6KjBZjd4y/Liw4H/H9B1eGGjK/HGBc+GDd7n1BXWiJLqvCFGTafV0hJaeBeWgnwG3Sr9qmw9mZQuBHNZY3dK/sz9OCpLy6dGAVgZ8QULv4599ShjgApFVLEm/7VnNL2zcS+ytAgXySAR6vuPSLegpjypMPkyg/HT1qu6C9RND2Q5iqcbx6sYpC1+HL4EbvwM1l1g/uUTUmD8WwQqCzAoBC2mlgokT1uGiRSiIAsWLcjPpKNaNnH80qBUejY71V56QHrcenaLzgCtEU9bDhMdMezZND70v6bM1zG1CNQ3sKsmwszRHaYk1SCb+wa1kDT07EWEeUBeHYOU3w5tqYOvXhJ1G91QOIeggO4eKPsISVpZLfjurZ1VC0ZXJYytmWmJukk/C/xfOvCONQmTtlY+ciUkTvfRgCoKs7j9FR5Ks9TawGQx5C32QhY15VVGzdqB0cDwLoDL4Uc62owAVVv1VL8B9hIhz0058cD1BSrCihNl1XRaA4ewn0tuJNfoBkMjZRfN+ZTM+/ZGH1pQkW3ndqjNOhT7RyjjcUfh3rgUSL59l8KHwJXTAlOJBZuM=
-        file: get5-$TRAVIS_BUILD_NUMBER.zip
-        on:
-          tags: true
-        cleanup: "false"
+script:
+  - git submodule update --init
+  - git clone https://github.com/splewis/sm-builder
+  - cd sm-builder
+  - pip install --user -r requirements.txt
+  - python setup.py install --prefix=~/.local
+  - cd ..
+  - SMPACKAGE="http://sourcemod.net/latest.php?os=linux&version=${SMVERSION}"
+  - wget $SMPACKAGE
+  - tar xfz $(basename $SMPACKAGE)
+  - cd addons/sourcemod/scripting/
+  - chmod +x spcomp
+  - PATH+=":$PWD"
+  - cd include
+  - wget https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc
+  - cd ../../../..
+  - cp -r ./dependencies/sm-json/addons/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
+  - cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
+  - smversion scripting/get5/version.sp scripting/get5/manual_version.sp $TRAVIS_BUILD_NUMBER --gitcommit
+  - smbuilder
+  - zip -r get5-${TRAVIS_BUILD_NUMBER}.zip builds/get5/*
+deploy:
+  provider: releases
+  name: Build $TRAVIS_TAG
+  api_key:
+    secure: ckLkXStxYDEVKt8KOwr4lrBmGF2a6rflZnS7nQpP9oCqI9WntFBACPMGVYGCGH/Mqe8ImGRQws8upNjVFECTz8DqfU3eAcirRVl8IrIRPDnrcYX6KjBZjd4y/Liw4H/H9B1eGGjK/HGBc+GDd7n1BXWiJLqvCFGTafV0hJaeBeWgnwG3Sr9qmw9mZQuBHNZY3dK/sz9OCpLy6dGAVgZ8QULv4599ShjgApFVLEm/7VnNL2zcS+ytAgXySAR6vuPSLegpjypMPkyg/HT1qu6C9RND2Q5iqcbx6sYpC1+HL4EbvwM1l1g/uUTUmD8WwQqCzAoBC2mlgokT1uGiRSiIAsWLcjPpKNaNnH80qBUejY71V56QHrcenaLzgCtEU9bDhMdMezZND70v6bM1zG1CNQ3sKsmwszRHaYk1SCb+wa1kDT07EWEeUBeHYOU3w5tqYOvXhJ1G91QOIeggO4eKPsISVpZLfjurZ1VC0ZXJYytmWmJukk/C/xfOvCONQmTtlY+ciUkTvfRgCoKs7j9FR5Ks9TawGQx5C32QhY15VVGzdqB0cDwLoDL4Uc62owAVVv1VL8B9hIhz0058cD1BSrCihNl1XRaA4ewn0tuJNfoBkMjZRfN+ZTM+/ZGH1pQkW3ndqjNOhT7RyjjcUfh3rgUSL59l8KHwJXTAlOJBZuM=
+  file: get5-$TRAVIS_BUILD_NUMBER.zip
+  on:
+    tags: true
+  skip_cleanup: true
 
 notifications:
   email: true
