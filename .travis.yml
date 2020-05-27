@@ -23,8 +23,9 @@ before_script:
 - cp -r ./dependencies/sm-json/addons/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
 - cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
 script:
-- smbuilder --flags="-E"
-- zip -r build.zip builds
+- smversion scripting/get5/version.sp scripting/get5/manual_version.sp $TRAVIS_BUILD_NUMBER --gitcommit
+- smbuilder
+- zip -r build.zip builds/get5/*
 notifications:
   email: true
 deploy:

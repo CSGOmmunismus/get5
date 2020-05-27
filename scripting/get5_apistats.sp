@@ -70,7 +70,7 @@ public Plugin myinfo = {
   name = "Get5 Web API Integration",
   author = "splewis/phlexplexico/tuudik",
   description = "Records match stats to a get5-web api",
-  version = "1.0.2",
+  version = PLUGIN_VERSION,
   url = "https://github.com/CSGOmmunismus/get5"
 };
 // clang-format on
