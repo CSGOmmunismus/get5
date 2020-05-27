@@ -3,4 +3,4 @@
 	url = https://github.com/clugg/sm-json
 [submodule "dependencies/System2"]
 	path = dependencies/System2
-	url = https://github.com/dordnung/System2
+	url = https://github.com/dordnung/System2.git
