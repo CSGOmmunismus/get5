@@ -50,6 +50,7 @@ deploy:
       all_branches: true
       tags: false
     skip_cleanup: true
+    prerelease: true
 
 notifications:
   email: true
