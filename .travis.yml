@@ -26,7 +26,7 @@ deploy:
     script: bash build.sh
     on:
       tags: true
-    cleanup: false
+    skip_cleanup: true
   - provider: releases
     name: Release $TRAVIS_TAG
     api_key:
@@ -34,13 +34,13 @@ deploy:
     file: get5.zip
     on:
       tags: true
-    cleanup: false
+    skip_cleanup: true
   - provider: script
     script: bash build.sh beta
     on:
       all_branches: true
       tags: false
-    cleanup: false
+    skip_cleanup: true
   - provider: releases
     name: Beta $TRAVIS_COMMIT $TRAVIS_BRANCH
     api_key:
@@ -49,7 +49,7 @@ deploy:
     on:
       all_branches: true
       tags: false
-    cleanup: false
+    skip_cleanup: true
 
 notifications:
   email: true
