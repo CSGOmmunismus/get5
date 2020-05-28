@@ -207,15 +207,14 @@ stock bool LoadMatchFromUrl(const char[] url, ArrayList paramNames = null,
 
   if (steamWorksAvaliable) {
     // Add the protocl strings. Only allow http since SteamWorks doesn't support http it seems?
-    //ReplaceString(cleanedUrl, sizeof(cleanedUrl), "https://", "http://");
-    //if (StrContains(cleanedUrl, "http://") == -1) {
-    //  Format(cleanedUrl, sizeof(cleanedUrl), "http://%s", cleanedUrl);
-    //}
-    //LogDebug("cleanedUrl (SteamWorks) = %s", cleanedUrl);
+    ReplaceString(cleanedUrl, sizeof(cleanedUrl), "https://", "http://");
+    if (StrContains(cleanedUrl, "http://") == -1) {
+      Format(cleanedUrl, sizeof(cleanedUrl), "http://%s", cleanedUrl);
+    }
+    LogDebug("cleanedUrl (SteamWorks) = %s", cleanedUrl);
     Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, cleanedUrl);
     if (request == INVALID_HANDLE) {
       MatchConfigFail("Failed to create HTTP GET request");
-      LogDebug("cleanedUrl (SteamWorks) = %s", request);
       return false;
     }
 
