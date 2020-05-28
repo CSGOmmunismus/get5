@@ -19,7 +19,7 @@ script:
   - chmod +x spcomp
   - PATH+=":$PWD"
   - cd include
-  - wget https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc
+  - wget https://github.com/komashchenko/SteamWorks/raw/master/Pawn/includes/SteamWorks.inc
   - cd ../../../..
   - cp -r ./dependencies/sm-json/addons/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
   - cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
