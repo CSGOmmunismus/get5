@@ -115,10 +115,12 @@ public Action Command_Available(int client, int args) {
   JSON_Object json = new JSON_Object();
 
   json.SetInt("gamestate", view_as<int>(Get5_GetGameState()));
-  json.SetInt("avaliable", 1);  // legacy version since I'm bad at spelling
   json.SetInt("available", 1);
   json.SetString("plugin_version", versionString);
-
+  #if defined COMMIT_STRING
+    json.SetString("commit", COMMIT_STRING);
+  #endif
+  
   char buffer[256];
   json.Encode(buffer, sizeof(buffer), true);
   ReplyToCommand(client, buffer);
