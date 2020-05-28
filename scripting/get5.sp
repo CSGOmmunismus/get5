@@ -225,7 +225,7 @@ Handle g_OnSeriesResult = INVALID_HANDLE;
 // clang-format off
 public Plugin myinfo = {
   name = "Get5",
-  author = "splewis",
+  author = "splewis/Tuud!K",
   description = "",
   version = PLUGIN_VERSION,
   url = "https://github.com/splewis/get5"
