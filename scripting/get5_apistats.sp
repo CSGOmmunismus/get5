@@ -81,22 +81,15 @@ public void OnPluginStart() {
   g_UseSVGCvar = CreateConVar("get5_use_svg", "1", "support svg team logos");
   HookConVarChange(g_UseSVGCvar, LogoBasePathChanged);
 
-  g_FTPHostCvar = 
-      CreateConVar("get5_api_ftp_host", "ftp://example.com", "Remote FTP Host. Make sure you do NOT have the trailing slash. Include the path to the directory you wish to have.");
-  g_FTPPortCvar = 
-      CreateConVar("get5_api_ftp_port", "21", "Remote FTP Port");
-  g_FTPUsernameCvar =
-      CreateConVar("get5_api_ftp_username", "username", "Username for the FTP connection.");
-  g_FTPPasswordCvar = 
-      CreateConVar("get5_api_ftp_password", "supersecret", "Password for the FTP user. Leave blank if no password.");
-  g_FTPEnableCvar = 
-      CreateConVar("get5_api_ftp_enabled", "0", "0 Disables FTP Upload, 1 Enables.");
+  g_FTPHostCvar = CreateConVar("get5_api_ftp_host", "ftp://example.com", "Remote FTP Host. Make sure you do NOT have the trailing slash. Include the path to the directory you wish to have.");
+  g_FTPPortCvar = CreateConVar("get5_api_ftp_port", "21", "Remote FTP Port");
+  g_FTPUsernameCvar =CreateConVar("get5_api_ftp_username", "username", "Username for the FTP connection.");
+  g_FTPPasswordCvar = CreateConVar("get5_api_ftp_password", "supersecret", "Password for the FTP user. Leave blank if no password.");
+  g_FTPEnableCvar = CreateConVar("get5_api_ftp_enabled", "0", "0 Disables FTP Upload, 1 Enables.");
 
-  g_APIKeyCvar =
-      CreateConVar("get5_web_api_key", "", "Match API key, this is automatically set through rcon");
+  g_APIKeyCvar = CreateConVar("get5_web_api_key", "", "Match API key, this is automatically set through rcon");
   HookConVarChange(g_APIKeyCvar, ApiInfoChanged);
-  g_APIURLCvar = CreateConVar("get5_web_api_url", "", "URL the get5 api is hosted at, IGNORE AS IT IS SYSTEM SET.";
-
+  g_APIURLCvar = CreateConVar("get5_web_api_url", "", "URL the get5 api is hosted at, IGNORE AS IT IS SYSTEM SET.");
   HookConVarChange(g_APIURLCvar, ApiInfoChanged);
 
   RegConsoleCmd("get5_web_available", Command_Available);
