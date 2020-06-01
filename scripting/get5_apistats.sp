@@ -124,8 +124,9 @@ public Action Command_Available(int client, int args) {
 }
 
 public void LogoBasePathChanged(ConVar convar, const char[] oldValue, const char[] newValue) {
-  LogDebug("LOGO_DIR", LOGO_DIR);
+  LogDebug("LOGO_DIR %s", LOGO_DIR);
   g_LogoBasePath = g_UseSVGCvar.BoolValue ? LOGO_DIR : LEGACY_LOGO_DIR;
+  LogDebug("g_LogoBasePath %s", g_LogoBasePath);
 }
 
 public void ApiInfoChanged(ConVar convar, const char[] oldValue, const char[] newValue) {
