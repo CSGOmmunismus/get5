@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 if [ "$1" == "beta" ]; then
     smversion scripting/get5/version.sp scripting/get5/manual_version.sp $TRAVIS_BUILD_NUMBER --gitcommit
     smbuilder --compiler=addons/sourcemod/scripting/spcomp
