@@ -68,7 +68,7 @@ char g_APIURL[128];
 // clang-format off
 public Plugin myinfo = {
   name = "Get5 Web API Integration",
-  author = "splewis/phlexplexico/tuudik",
+  author = "splewis/phlexplexico/Tuud!K",
   description = "Records match stats to a get5-web api",
   version = PLUGIN_VERSION,
   url = "https://github.com/CSGOmmunismus/get5"
@@ -220,6 +220,8 @@ public void Get5_OnSeriesInit() {
   g_MatchID = StringToInt(matchid);
 
   // Handle new logos.
+
+  LogDebug("Checking logo basepath: %s", g_LogoBasePath);
   if (!DirExists(g_LogoBasePath)) {
     if (!CreateDirectory(g_LogoBasePath, 755)) {
       LogError("Failed to create logo directory: %s", g_LogoBasePath);
@@ -229,7 +231,9 @@ public void Get5_OnSeriesInit() {
   char logo1[32];
   char logo2[32];
   GetConVarStringSafe("mp_teamlogo_1", logo1, sizeof(logo1));
+  LogDebug("mp_teamlogo_1: %s", logo1);
   GetConVarStringSafe("mp_teamlogo_2", logo2, sizeof(logo2));
+  LogDebug("mp_teamlogo_2: %s", logo2);
   CheckForLogo(logo1);
   CheckForLogo(logo2);
 }
