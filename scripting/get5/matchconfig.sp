@@ -211,7 +211,6 @@ stock bool LoadMatchFromUrl(const char[] url, ArrayList paramNames = null,
     if (StrContains(cleanedUrl, "http://") == -1) {
       Format(cleanedUrl, sizeof(cleanedUrl), "http://%s", cleanedUrl);
     }
-    LogDebug("cleanedUrl (SteamWorks) = %s", cleanedUrl);
     Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, cleanedUrl);
     if (request == INVALID_HANDLE) {
       MatchConfigFail("Failed to create HTTP GET request");
