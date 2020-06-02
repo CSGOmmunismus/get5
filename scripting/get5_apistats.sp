@@ -80,7 +80,7 @@ public void OnPluginStart() {
   LogDebug("OnPluginStart version=%s", PLUGIN_VERSION);
   g_UseSVGCvar = CreateConVar("get5_use_svg", "1", "support svg team logos");
   HookConVarChange(g_UseSVGCvar, LogoBasePathChanged);
-
+  g_LogoBasePath = g_UseSVGCvar.BoolValue ? LOGO_DIR : LEGACY_LOGO_DIR;
   g_FTPHostCvar = CreateConVar("get5_api_ftp_host", "ftp://example.com", "Remote FTP Host. Make sure you do NOT have the trailing slash. Include the path to the directory you wish to have.");
   g_FTPPortCvar = CreateConVar("get5_api_ftp_port", "21", "Remote FTP Port");
   g_FTPUsernameCvar =CreateConVar("get5_api_ftp_username", "username", "Username for the FTP connection.");
@@ -215,7 +215,6 @@ public void Get5_OnSeriesInit() {
   g_MatchID = StringToInt(matchid);
 
   // Handle new logos.
-
   LogDebug("Checking logo basepath: %s", g_LogoBasePath);
   if (!DirExists(g_LogoBasePath)) {
     if (!CreateDirectory(g_LogoBasePath, 755)) {
