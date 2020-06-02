@@ -225,9 +225,7 @@ public void Get5_OnSeriesInit() {
   char logo1[32];
   char logo2[32];
   GetConVarStringSafe("mp_teamlogo_1", logo1, sizeof(logo1));
-  LogDebug("mp_teamlogo_1: %s", logo1);
   GetConVarStringSafe("mp_teamlogo_2", logo2, sizeof(logo2));
-  LogDebug("mp_teamlogo_2: %s", logo2);
   CheckForLogo(logo1);
   CheckForLogo(logo2);
 }
@@ -236,7 +234,7 @@ public void CheckForLogo(const char[] logo) {
   if (StrEqual(logo, "")) {
     return;
   }
-
+  LogDebug("Checking for logo: %s", logo);
   char logoPath[PLATFORM_MAX_PATH + 1];
   // change png to svg because it's better supported
   if (g_UseSVGCvar.BoolValue) {
