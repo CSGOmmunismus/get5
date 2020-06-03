@@ -226,12 +226,15 @@ public void Get5_OnSeriesInit() {
   char logo2[32];
   GetConVarStringSafe("mp_teamlogo_1", logo1, sizeof(logo1));
   GetConVarStringSafe("mp_teamlogo_2", logo2, sizeof(logo2));
+  LogDebug("Checking for mp_teamlogo_1: %s", logo1);
+  LogDebug("Checking for mp_teamlogo_2: %s", logo2);
   CheckForLogo(logo1);
   CheckForLogo(logo2);
 }
 
 public void CheckForLogo(const char[] logo) {
   if (StrEqual(logo, "")) {
+    LogDebug("Empty logo passed to CheckForLogo");
     return;
   }
   LogDebug("Checking for logo: %s", logo);

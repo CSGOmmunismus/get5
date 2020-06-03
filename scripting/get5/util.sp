@@ -275,6 +275,7 @@ stock void SetTeamInfo(int csTeam, const char[] name, const char[] flag = "",
   SetConVarStringSafe(teamCvarName, taggedName);
   SetConVarStringSafe(flagCvarName, flag);
   SetConVarStringSafe(logoCvarName, logo);
+  LogDebug("SetConVarStringSafe logoCvarName: %s %s", logoCvarName, logo);
   SetConVarStringSafe(textCvarName, matchstat);
 
   if (g_MapsToWin > 1) {
