@@ -109,6 +109,8 @@ stock bool LoadMatchConfig(const char[] config, bool restoreBackup = false) {
   if (!restoreBackup) {
     SetStartingTeams();
     ExecCfg(g_WarmupCfgCvar);
+
+    SetMatchTeamCvars();
     ExecuteMatchConfigCvars();
     LoadPlayerNames();
     EnsurePausedWarmup();
