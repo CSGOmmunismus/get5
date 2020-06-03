@@ -1,62 +1,63 @@
 addons:
   apt_packages:
-    - lib32stdc++6
+  - lib32stdc++6
 env:
-  - SMVERSION=1.10
+- SMVERSION=1.10
 git:
   depth: false
 script:
-  - git submodule update --init
-  - git clone https://github.com/splewis/sm-builder
-  - cd sm-builder
-  - pip install --user -r requirements.txt
-  - python setup.py install --prefix=~/.local
-  - cd ..
-  - SMPACKAGE="http://sourcemod.net/latest.php?os=linux&version=${SMVERSION}"
-  - wget $SMPACKAGE
-  - tar xfz $(basename $SMPACKAGE)
-  - SWPACKAGE="https://github.com/KyleSanderson/SteamWorks/releases/download/1.2.3b/package-lin.tgz"
-  - wget $SWPACKAGE
-  - tar xfz $(basename $SWPACKAGE)
-  - cp package/addons/sourcemod/scripting/include/SteamWorks.inc addons/sourcemod/scripting/include/
-  - cd addons/sourcemod/scripting/
-  - chmod +x spcomp
-  - PATH+=":$PWD"
-  - cd ../../..
-  - cp -r ./dependencies/sm-json/addons/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
-  - cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
+- git submodule update --init
+- git clone https://github.com/splewis/sm-builder
+- cd sm-builder
+- pip install --user -r requirements.txt
+- python setup.py install --prefix=~/.local
+- cd ..
+- SMPACKAGE="http://sourcemod.net/latest.php?os=linux&version=${SMVERSION}"
+- wget $SMPACKAGE
+- tar xfz $(basename $SMPACKAGE)
+- SWPACKAGE="https://github.com/KyleSanderson/SteamWorks/releases/download/1.2.3b/package-lin.tgz"
+- wget $SWPACKAGE
+- tar xfz $(basename $SWPACKAGE)
+- cp package/addons/sourcemod/scripting/include/SteamWorks.inc addons/sourcemod/scripting/include/
+- cd addons/sourcemod/scripting/
+- chmod +x spcomp
+- PATH+=":$PWD"
+- cd ../../..
+- cp -r ./dependencies/sm-json/addons/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
+- cp -r ./dependencies/System2/sourcemod/scripting/include/* ./addons/sourcemod/scripting/include
 deploy:
-  - provider: script
-    script: bash build.sh
-    on:
-      tags: true
-    skip_cleanup: true
-  - provider: releases
-    name: Release $TRAVIS_TAG
-    api_key:
-      secure: ckLkXStxYDEVKt8KOwr4lrBmGF2a6rflZnS7nQpP9oCqI9WntFBACPMGVYGCGH/Mqe8ImGRQws8upNjVFECTz8DqfU3eAcirRVl8IrIRPDnrcYX6KjBZjd4y/Liw4H/H9B1eGGjK/HGBc+GDd7n1BXWiJLqvCFGTafV0hJaeBeWgnwG3Sr9qmw9mZQuBHNZY3dK/sz9OCpLy6dGAVgZ8QULv4599ShjgApFVLEm/7VnNL2zcS+ytAgXySAR6vuPSLegpjypMPkyg/HT1qu6C9RND2Q5iqcbx6sYpC1+HL4EbvwM1l1g/uUTUmD8WwQqCzAoBC2mlgokT1uGiRSiIAsWLcjPpKNaNnH80qBUejY71V56QHrcenaLzgCtEU9bDhMdMezZND70v6bM1zG1CNQ3sKsmwszRHaYk1SCb+wa1kDT07EWEeUBeHYOU3w5tqYOvXhJ1G91QOIeggO4eKPsISVpZLfjurZ1VC0ZXJYytmWmJukk/C/xfOvCONQmTtlY+ciUkTvfRgCoKs7j9FR5Ks9TawGQx5C32QhY15VVGzdqB0cDwLoDL4Uc62owAVVv1VL8B9hIhz0058cD1BSrCihNl1XRaA4ewn0tuJNfoBkMjZRfN+ZTM+/ZGH1pQkW3ndqjNOhT7RyjjcUfh3rgUSL59l8KHwJXTAlOJBZuM=
-    file: builds/get5/get5.zip
-    on:
-      tags: true
-    skip_cleanup: true
-  - provider: script
-    script: bash build.sh beta
-    on:
-      all_branches: true
-      tags: false
-    skip_cleanup: true
-  - provider: releases
-    name: Beta $TRAVIS_BRANCH $TRAVIS_TAG
-    api_key:
-      secure: ckLkXStxYDEVKt8KOwr4lrBmGF2a6rflZnS7nQpP9oCqI9WntFBACPMGVYGCGH/Mqe8ImGRQws8upNjVFECTz8DqfU3eAcirRVl8IrIRPDnrcYX6KjBZjd4y/Liw4H/H9B1eGGjK/HGBc+GDd7n1BXWiJLqvCFGTafV0hJaeBeWgnwG3Sr9qmw9mZQuBHNZY3dK/sz9OCpLy6dGAVgZ8QULv4599ShjgApFVLEm/7VnNL2zcS+ytAgXySAR6vuPSLegpjypMPkyg/HT1qu6C9RND2Q5iqcbx6sYpC1+HL4EbvwM1l1g/uUTUmD8WwQqCzAoBC2mlgokT1uGiRSiIAsWLcjPpKNaNnH80qBUejY71V56QHrcenaLzgCtEU9bDhMdMezZND70v6bM1zG1CNQ3sKsmwszRHaYk1SCb+wa1kDT07EWEeUBeHYOU3w5tqYOvXhJ1G91QOIeggO4eKPsISVpZLfjurZ1VC0ZXJYytmWmJukk/C/xfOvCONQmTtlY+ciUkTvfRgCoKs7j9FR5Ks9TawGQx5C32QhY15VVGzdqB0cDwLoDL4Uc62owAVVv1VL8B9hIhz0058cD1BSrCihNl1XRaA4ewn0tuJNfoBkMjZRfN+ZTM+/ZGH1pQkW3ndqjNOhT7RyjjcUfh3rgUSL59l8KHwJXTAlOJBZuM=
-    file: builds/get5/get5.zip
-    on:
-      all_branches: true
-      tags: false
-    skip_cleanup: true
-    prerelease: true
-
+- provider: script
+  script: bash build.sh
+  on:
+    tags: true
+  skip_cleanup: true
+- provider: releases
+  name: Release $TRAVIS_TAG
+  api_key:
+    secure: ckLkXStxYDEVKt8KOwr4lrBmGF2a6rflZnS7nQpP9oCqI9WntFBACPMGVYGCGH/Mqe8ImGRQws8upNjVFECTz8DqfU3eAcirRVl8IrIRPDnrcYX6KjBZjd4y/Liw4H/H9B1eGGjK/HGBc+GDd7n1BXWiJLqvCFGTafV0hJaeBeWgnwG3Sr9qmw9mZQuBHNZY3dK/sz9OCpLy6dGAVgZ8QULv4599ShjgApFVLEm/7VnNL2zcS+ytAgXySAR6vuPSLegpjypMPkyg/HT1qu6C9RND2Q5iqcbx6sYpC1+HL4EbvwM1l1g/uUTUmD8WwQqCzAoBC2mlgokT1uGiRSiIAsWLcjPpKNaNnH80qBUejY71V56QHrcenaLzgCtEU9bDhMdMezZND70v6bM1zG1CNQ3sKsmwszRHaYk1SCb+wa1kDT07EWEeUBeHYOU3w5tqYOvXhJ1G91QOIeggO4eKPsISVpZLfjurZ1VC0ZXJYytmWmJukk/C/xfOvCONQmTtlY+ciUkTvfRgCoKs7j9FR5Ks9TawGQx5C32QhY15VVGzdqB0cDwLoDL4Uc62owAVVv1VL8B9hIhz0058cD1BSrCihNl1XRaA4ewn0tuJNfoBkMjZRfN+ZTM+/ZGH1pQkW3ndqjNOhT7RyjjcUfh3rgUSL59l8KHwJXTAlOJBZuM=
+  file: builds/get5/get5.zip
+  on:
+    tags: true
+  skip_cleanup: true
+- provider: script
+  script: bash build.sh beta
+  on:
+    all_branches: true
+    tags: false
+  skip_cleanup: true
+- provider: releases
+  name: Beta $TRAVIS_BRANCH $TRAVIS_TAG
+  api_key:
+    secure: ckLkXStxYDEVKt8KOwr4lrBmGF2a6rflZnS7nQpP9oCqI9WntFBACPMGVYGCGH/Mqe8ImGRQws8upNjVFECTz8DqfU3eAcirRVl8IrIRPDnrcYX6KjBZjd4y/Liw4H/H9B1eGGjK/HGBc+GDd7n1BXWiJLqvCFGTafV0hJaeBeWgnwG3Sr9qmw9mZQuBHNZY3dK/sz9OCpLy6dGAVgZ8QULv4599ShjgApFVLEm/7VnNL2zcS+ytAgXySAR6vuPSLegpjypMPkyg/HT1qu6C9RND2Q5iqcbx6sYpC1+HL4EbvwM1l1g/uUTUmD8WwQqCzAoBC2mlgokT1uGiRSiIAsWLcjPpKNaNnH80qBUejY71V56QHrcenaLzgCtEU9bDhMdMezZND70v6bM1zG1CNQ3sKsmwszRHaYk1SCb+wa1kDT07EWEeUBeHYOU3w5tqYOvXhJ1G91QOIeggO4eKPsISVpZLfjurZ1VC0ZXJYytmWmJukk/C/xfOvCONQmTtlY+ciUkTvfRgCoKs7j9FR5Ks9TawGQx5C32QhY15VVGzdqB0cDwLoDL4Uc62owAVVv1VL8B9hIhz0058cD1BSrCihNl1XRaA4ewn0tuJNfoBkMjZRfN+ZTM+/ZGH1pQkW3ndqjNOhT7RyjjcUfh3rgUSL59l8KHwJXTAlOJBZuM=
+  file: builds/get5/get5.zip
+  on:
+    all_branches: true
+    tags: false
+  skip_cleanup: true
+  prerelease: true
 notifications:
-  email: true
-    on_success: never # default: change
-    on_failure: always # default: always
+  email:
+    on_success: change
+    on_failure: change
+  slack:
+    secure: uTBaChvQaS/eQQhnsTWrUjsPHyRnyZIVCi1UuQJUm7BKUECSBm273HEWa+i93BJpJ5Ase01UN+Jyw33BPcgvWJKd5EcjLhsAXGZGeT+5tvAYI5RkwkV7AUaUNelbsn1aZruS5nk/7YS/Ib5DWKk9N5wrEiWMNsuTwhIu2n1kUEoSpDRrHeDaCmXJmntBcLC5jIPV0Y6FQh+RjlBD/HxtkrOkjofYDeYV7KX6wZLTWWeDcoU5bAamvh0CvNhfMJjmeaUt53nAhGEEBuRwH6D9oPF+JtLCCDeX6GqQiuY7AxAMetu/5HOfZl2olSzj03JenvzliynBlhkhkGidDbXKUkjREK2rUpvPr26c2CgEEy3UI5h4/1K8fHwIlTzT0Uu9O907qSxa5dyFzJsA34yro7US0Ub17QZGNEWMZdU61m5thSb7bNkbxTvayrxHTMc0SJ+GTEhb9fNL+zMbhNkXicE+6uca1JmuBxAlgc9ZZYdtrJoP/8eSmyqJuUxTh5OgXvc8/CgItEdmYP364hCX9f2VEpnnFiaYSTgPjef2yrueEHThVdOFlZA0Lnnktrf4/o7UT6hCurcOT9FGZhWFxFh65GQtXC5BOuzmPdnBIblY7LinenwVtinpGKajB7R09kKaRVeYTXPRkaWlDYZSA7I9QUHxrVyCST1w4TggvwU=
