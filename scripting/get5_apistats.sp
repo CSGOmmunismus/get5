@@ -250,8 +250,8 @@ public void CheckForLogo(const char[] logo) {
   if (!FileExists(logoPath)) {
     LogDebug("Fetching logo for %s", logo);
     Handle req = g_UseSVGCvar.BoolValue
-                     ? CreateRequest(k_EHTTPMethodGET, "/static/img/logos/%s.svg", logo)
-                     : CreateRequest(k_EHTTPMethodGET, "/static/img/logos/%s.png", logo);
+                     ? CreateRequest(k_EHTTPMethodGET, "static/img/logos/%s.svg", logo)
+                     : CreateRequest(k_EHTTPMethodGET, "static/img/logos/%s.png", logo);
 
     if (req == INVALID_HANDLE) {
       return;
