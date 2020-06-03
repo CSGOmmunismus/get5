@@ -59,7 +59,7 @@ deploy:
   prerelease: true
 notifications:
   email:
-    on_success: change
-    on_failure: change
+    on_success: false
+    on_failure: true
   slack:
     secure: uTBaChvQaS/eQQhnsTWrUjsPHyRnyZIVCi1UuQJUm7BKUECSBm273HEWa+i93BJpJ5Ase01UN+Jyw33BPcgvWJKd5EcjLhsAXGZGeT+5tvAYI5RkwkV7AUaUNelbsn1aZruS5nk/7YS/Ib5DWKk9N5wrEiWMNsuTwhIu2n1kUEoSpDRrHeDaCmXJmntBcLC5jIPV0Y6FQh+RjlBD/HxtkrOkjofYDeYV7KX6wZLTWWeDcoU5bAamvh0CvNhfMJjmeaUt53nAhGEEBuRwH6D9oPF+JtLCCDeX6GqQiuY7AxAMetu/5HOfZl2olSzj03JenvzliynBlhkhkGidDbXKUkjREK2rUpvPr26c2CgEEy3UI5h4/1K8fHwIlTzT0Uu9O907qSxa5dyFzJsA34yro7US0Ub17QZGNEWMZdU61m5thSb7bNkbxTvayrxHTMc0SJ+GTEhb9fNL+zMbhNkXicE+6uca1JmuBxAlgc9ZZYdtrJoP/8eSmyqJuUxTh5OgXvc8/CgItEdmYP364hCX9f2VEpnnFiaYSTgPjef2yrueEHThVdOFlZA0Lnnktrf4/o7UT6hCurcOT9FGZhWFxFh65GQtXC5BOuzmPdnBIblY7LinenwVtinpGKajB7R09kKaRVeYTXPRkaWlDYZSA7I9QUHxrVyCST1w4TggvwU=
